@@ -39,7 +39,7 @@ namespace KattisTableGenerator {
                             }
                         } else {
                             if (Folders.Count > 0)
-                                Folders.Peek ().AddPath (line);
+                                Folders.Peek ().Add (line);
                         }
                     }
                 }
@@ -66,7 +66,7 @@ namespace KattisTableGenerator {
             NONE
         }
 
-        public string GetLayout () {
+        public string GetValidConfig () {
             string res = "";
             if (Ignored.Count > 0) {
                 res += "IGNORE\n";

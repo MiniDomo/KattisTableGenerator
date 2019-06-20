@@ -5,17 +5,19 @@ namespace KattisTableGenerator {
         public string Url { get; }
         public Queue<string> Paths { get; }
 
+        public int Count { get => Paths.Count; }
+
         public Folder (string Url) {
             this.Url = Url;
             Paths = new Queue<string> ();
         }
 
-        public void AddPath (string path) {
+        public void Add (string path) {
             Paths.Enqueue (path);
         }
 
-        public int Size () {
-            return Paths.Count;
+        public string Next () {
+            return Paths.Dequeue ();
         }
     }
 }
