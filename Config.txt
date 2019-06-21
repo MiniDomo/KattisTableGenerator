@@ -1,4 +1,0 @@
-
-FOLDER
-TO:https://github.com/MiniDomo/Kattis/tree/master/C%2B%2B
-C:\Users\domob\Documents\KattisTableGenerator

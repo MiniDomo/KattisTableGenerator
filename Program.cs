@@ -8,9 +8,10 @@ namespace KattisTableGenerator {
             Mapping.AssignMappings ();
             Config config = new Config ().Load ();
             Generator generator = new Generator (config);
-            Console.WriteLine (config.GetValidConfig ());
+            Console.WriteLine (config);
+            Console.WriteLine ();
             generator.checkFolders ();
-            
+
         }
     }
 }

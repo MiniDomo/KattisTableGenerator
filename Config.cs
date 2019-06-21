@@ -25,7 +25,7 @@ namespace KattisTableGenerator {
             FileState state = FileState.NONE;
             foreach (string original in lines) {
                 string line = original.Trim ();
-                if (line.Length != 0 && !isFileState (line, ref state)) {
+                if (line.Length != 0 && !IsFileState (line, ref state)) {
                     if (state == FileState.IGNORE && !Ignored.Contains (line)) {
                         Ignored.Add (line);
                     } else if (state == FileState.URL && !Urls.Contains (line) && Url.IsProperFormatGithubUrl (line)) {
@@ -47,7 +47,7 @@ namespace KattisTableGenerator {
             return this;
         }
 
-        private bool isFileState (string line, ref FileState state) {
+        private bool IsFileState (string line, ref FileState state) {
             if (string.Equals (line, "ignore", StringComparison.OrdinalIgnoreCase))
                 state = FileState.IGNORE;
             else if (string.Equals (line, "url", StringComparison.OrdinalIgnoreCase))
@@ -66,7 +66,7 @@ namespace KattisTableGenerator {
             NONE
         }
 
-        public string GetValidConfig () {
+        public override string ToString () {
             string res = "";
             if (Ignored.Count > 0) {
                 res += "IGNORE\n";
