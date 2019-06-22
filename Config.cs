@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KattisTableGenerator {
     public class Config {
@@ -28,13 +29,13 @@ namespace KattisTableGenerator {
                 if (line.Length != 0 && !IsFileState (line, ref state)) {
                     if (state == FileState.IGNORE && !Ignored.Contains (line)) {
                         Ignored.Add (line);
-                    } else if (state == FileState.URL && !Urls.Contains (line) && Url.IsProperFormatGithubUrl (line)) {
+                    } else if (state == FileState.URL && !Urls.Contains (line) && IsProperFormatGithubUrl (line)) {
                         Urls.Add (line);
                     } else if (state == FileState.FOLDER) {
                         if (line.StartsWith ("to:", StringComparison.OrdinalIgnoreCase)) {
                             if (line.Length > 3) {
                                 string url = line.Substring (3);
-                                if (Url.IsProperFormatGithubUrl (url))
+                                if (IsProperFormatGithubUrl (url))
                                     Folders.Push (new Folder (url));
                             }
                         } else {
@@ -45,6 +46,10 @@ namespace KattisTableGenerator {
                 }
             }
             return this;
+        }
+
+        private bool IsProperFormatGithubUrl (string url) {
+            return Uri.IsWellFormedUriString (url, UriKind.Absolute) && Regex.IsMatch (url, @"^https://github.com/[^/]+/[^/]+(/|/tree/master/([^/]+/?)+)?$");
         }
 
         private bool IsFileState (string line, ref FileState state) {
@@ -60,10 +65,7 @@ namespace KattisTableGenerator {
         }
 
         private enum FileState {
-            IGNORE,
-            URL,
-            FOLDER,
-            NONE
+            IGNORE, URL, FOLDER, NONE
         }
 
         public override string ToString () {

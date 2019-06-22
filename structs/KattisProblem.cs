@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace KattisTableGenerator {
     public class KattisProblem : IComparable<KattisProblem>, IEquatable<KattisProblem> {
-        private string name,
-
-        id,
-        url;
+        private string name, id, url;
         private SortedSet<HyperLink> attachments;
 
         public KattisProblem (string name, string id) {
@@ -60,14 +57,15 @@ namespace KattisTableGenerator {
         }
 
         public override string ToString () {
-            string res = string.Format ("[{0}]({1})", name, url);
-            foreach (HyperLink link in attachments)
-                res += ", " + link;
+            string res = string.Format ("| [{0}]({1}) | ", name, url);
+            bool first = true;
+            foreach (HyperLink hyperlink in attachments)
+                res += (first ? "" : ", ") + hyperlink;
+            res += " |";
             return res;
         }
 
-        private class HyperLink : IComparable<HyperLink>,
-        IEquatable<HyperLink> {
+        private class HyperLink : IComparable<HyperLink>, IEquatable<HyperLink> {
             public string Language { get; }
             public string Url { get; }
 
@@ -77,6 +75,7 @@ namespace KattisTableGenerator {
             }
 
             public HyperLink (string lang) : this (lang, null) { }
+            
             public int CompareTo (HyperLink other) {
                 return Language.CompareTo (other.Language);
             }

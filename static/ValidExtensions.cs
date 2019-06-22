@@ -48,6 +48,8 @@ namespace KattisTableGenerator {
             { "scala", "Scala" }
         };
 
+        private ValidExtensions () { }
+
         public static bool Contains (string extension) {
             return ext.ContainsKey (extension);
         }
