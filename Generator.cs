@@ -1,19 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace KattisTableGenerator {
     public class Generator {
         private HashSet<string> ignored, urls;
         private Stack<Folder> folders;
-
-        private SortedSet<KattisProblem> table;
+        private SortedList<string, KattisProblem> table;
+        private HtmlWeb web;
         public Generator (Config config) {
             folders = config.Folders;
             ignored = config.Ignored;
             urls = config.Urls;
-            table = new SortedSet<KattisProblem> ();
+            table = new SortedList<string, KattisProblem> ();
+            web = new HtmlWeb ();
+        }
+
+        public string GetTableString () {
+            List<KattisProblem> list = new List<KattisProblem> ();
+            foreach (var pair in table) {
+                list.Add (pair.Value);
+            }
+            list.Sort ();
+            string res = string.Empty;
+            foreach (var a in list)
+                res += a + "\n";
+            return res;
         }
 
         public void checkFolders () {
@@ -29,19 +45,6 @@ namespace KattisTableGenerator {
                 }
             }
         }
-        /* 
-        FOLDERS
-        files must have problem id as name
-        folders must have problem id as name (change url)
-        - subsequent files must have problem id or main as name
-        - recursive
-
-        URLS
-        files must have problem id as name
-        folders must have problem id as name (change url)
-        - subsequent files must have problem id or main as name
-        - recursive
-         */
 
         private string AdjustUrl (string url) {
             string res = url;
@@ -63,26 +66,52 @@ namespace KattisTableGenerator {
                     int pos = info.Name.IndexOf ('.', StringComparison.Ordinal);
                     string id = info.Name.Substring (0, pos);
                     string ext = info.Name.Substring (pos + 1);
-                    if (!ignored.Contains (id) && !ignored.Contains ('.' + ext)) {
-                        Console.WriteLine (info.FullName);
-                        TryAdd (url, id, ext, folderIsID);
-                    }
+                    string fullUrl = url + info.Name;
+                    if (!ignored.Contains (id) && !ignored.Contains ('.' + ext) && (folderIsID == id.Equals ("main") || folderIsID == id.Equals (dir.Name)))
+                        TryAdd (fullUrl, folderIsID ? dir.Name : id, ext);
                 }
             }
         }
 
         private void HandleFolders (DirectoryInfo dir, string url) {
             foreach (DirectoryInfo info in dir.GetDirectories ()) {
-                if (!ignored.Contains (info.Name) /*  && Mapping.ContainsKey (info.Name) */ ) {
-                    Console.WriteLine (info.FullName);
+                if (!ignored.Contains (info.Name)) {
                     HandleFiles (info, url + info.Name + "/", true);
                 }
             }
         }
 
-        private void TryAdd (string url, string id, string ext, bool IdCanBeMain) {
-            if (Mapping.ContainsKey (id) || IdCanBeMain && id.Equals ("main")) {
-                
+        private void TryAdd (string url, string id, string ext) {
+            if (!ValidExtensions.Contains (ext))
+                return;
+            if (table.ContainsKey (id)) {
+                KattisProblem problem = table[id];
+                string lang = ValidExtensions.Get (ext);
+                if (!problem.Contains (lang))
+                    problem.Add (lang, url);
+            } else {
+                string name = string.Empty;
+                if (Mapping.ContainsKey (id)) {
+                    name = Mapping.Get (id);
+                } else {
+                    Stopwatch a = new Stopwatch ();
+                    a.Start ();
+                    HtmlDocument doc = web.Load ("https://open.kattis.com/problems/" + id);
+                    Console.Write (a.Elapsed.Milliseconds + " ");
+                    HtmlNode node = doc.DocumentNode.SelectSingleNode ("//head/title");
+                    a.Stop ();
+                    Console.Write (a.Elapsed.Milliseconds + " ");
+                    Match match = Regex.Match (node.InnerHtml, @"(.+) &ndash; Kattis, Kattis");
+                    name = WebUtility.HtmlDecode (match.Groups[1].ToString ());
+                    Console.Write (name + "\n");
+                }
+                if (!string.IsNullOrEmpty (name) && !name.Equals ("404: Not Found")) {
+                    table.Add (id, new KattisProblem (name, id));
+                    KattisProblem problem = table[id];
+                    string lang = ValidExtensions.Get (ext);
+                    if (!problem.Contains (lang))
+                        problem.Add (lang, url);
+                }
             }
         }
     }

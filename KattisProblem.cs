@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace KattisTableGenerator {
     public class KattisProblem : IComparable<KattisProblem>, IEquatable<KattisProblem> {
         private string name,
+
         id,
         url;
         private SortedSet<HyperLink> attachments;
@@ -15,6 +16,8 @@ namespace KattisTableGenerator {
             attachments = new SortedSet<HyperLink> ();
         }
 
+        public KattisProblem (string id) : this (null, id) { }
+
         public bool Contains (string lang) {
             return attachments.Contains (new HyperLink (lang, null));
         }
@@ -24,7 +27,7 @@ namespace KattisTableGenerator {
         }
 
         public int CompareTo (KattisProblem other) {
-            return id.CompareTo (other.id);
+            return name.Equals (other.name) ? id.CompareTo (other.id) : name.CompareTo (other.name);
         }
 
         public bool Equals (KattisProblem other) {
@@ -57,9 +60,9 @@ namespace KattisTableGenerator {
         }
 
         public override string ToString () {
-            string res = url;
-            foreach (HyperLink hyperlink in attachments)
-                res += " " + hyperlink;
+            string res = string.Format ("[{0}]({1})", name, url);
+            foreach (HyperLink link in attachments)
+                res += ", " + link;
             return res;
         }
 
@@ -108,7 +111,7 @@ namespace KattisTableGenerator {
             }
 
             public override string ToString () {
-                return string.Format ("[{1}]({0})", Language, Url);
+                return string.Format ("[{0}]({1})", Language, Url);
             }
         }
     }
