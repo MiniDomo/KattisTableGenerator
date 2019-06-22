@@ -11,6 +11,12 @@ namespace KattisTableGenerator {
             Console.WriteLine (config);
             Console.WriteLine ();
             generator.checkFolders ();
+            // KattisProblem a = new KattisProblem ("name", "id");
+            // a.Add ("C++", "google.com");
+            // Console.WriteLine (a.Contains ("C++"));
+            // Console.WriteLine (a);
+            // a.Add ("Jaa", "kattis.com");
+            // Console.WriteLine (a);
 
         }
     }

@@ -7,10 +7,13 @@ namespace KattisTableGenerator {
     public class Generator {
         private HashSet<string> ignored, urls;
         private Stack<Folder> folders;
+
+        private SortedSet<KattisProblem> table;
         public Generator (Config config) {
             folders = config.Folders;
             ignored = config.Ignored;
             urls = config.Urls;
+            table = new SortedSet<KattisProblem> ();
         }
 
         public void checkFolders () {
@@ -21,7 +24,7 @@ namespace KattisTableGenerator {
                 while (folder.Count > 0) {
                     string path = folder.Next ();
                     DirectoryInfo dir = new DirectoryInfo (path);
-                    HandleFiles (dir, url);
+                    HandleFiles (dir, url, false);
                     HandleFolders (dir, url);
                 }
             }
@@ -54,15 +57,15 @@ namespace KattisTableGenerator {
             return res;
         }
 
-        private void HandleFiles (DirectoryInfo dir, string url) {
+        private void HandleFiles (DirectoryInfo dir, string url, bool folderIsID) {
             foreach (FileInfo info in dir.GetFiles ()) {
-
                 if (!ignored.Contains (info.Name) && Regex.IsMatch (info.Name, @"^[A-Za-z\d]+\.[A-Za-z\d]+$")) {
                     int pos = info.Name.IndexOf ('.', StringComparison.Ordinal);
                     string id = info.Name.Substring (0, pos);
                     string ext = info.Name.Substring (pos + 1);
-                    if (!ignored.Contains (id) && !ignored.Contains ('.' + ext) && Mapping.ContainsKey (id)) {
+                    if (!ignored.Contains (id) && !ignored.Contains ('.' + ext)) {
                         Console.WriteLine (info.FullName);
+                        TryAdd (url, id, ext, folderIsID);
                     }
                 }
             }
@@ -70,10 +73,16 @@ namespace KattisTableGenerator {
 
         private void HandleFolders (DirectoryInfo dir, string url) {
             foreach (DirectoryInfo info in dir.GetDirectories ()) {
-
-                if (!ignored.Contains (info.Name) && Mapping.ContainsKey (info.Name)) {
+                if (!ignored.Contains (info.Name) /*  && Mapping.ContainsKey (info.Name) */ ) {
                     Console.WriteLine (info.FullName);
+                    HandleFiles (info, url + info.Name + "/", true);
                 }
+            }
+        }
+
+        private void TryAdd (string url, string id, string ext, bool IdCanBeMain) {
+            if (Mapping.ContainsKey (id) || IdCanBeMain && id.Equals ("main")) {
+                
             }
         }
     }
