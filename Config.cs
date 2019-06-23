@@ -22,47 +22,61 @@ namespace KattisTableGenerator {
         }
 
         public Config Load () {
-            Logger.WriteLine ("Reading {0}...", filename);
+            Logger.WriteLine ($"Reading {filename}...");
             string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
             FileState state = FileState.NONE;
             foreach (string original in lines) {
                 string line = original.Trim ();
-                if (line.Length != 0 && !IsFileState (line, ref state)) {
-                    if (state == FileState.IGNORE && !Ignored.Contains (line)) {
-                        Logger.WriteLine ("Added {0} to ignored list.", line);
-                        Ignored.Add (line);
+                if (!string.IsNullOrEmpty (line) && !IsFileState (line, ref state)) {
+                    if (state == FileState.IGNORE) {
+                        HandleIgnore (line);
                     } else if (state == FileState.URL) {
-                        if (Urls.Contains (line))
-                            Logger.WriteLine ("Duplicate Url found: {0}", line);
-                        else if (!IsProperFormatGithubUrl (line))
-                            Logger.WriteLine ("Invalid Url found: {0}", line);
-                        else {
-                            Logger.WriteLine ("Added {0} to Urls.", line);
-                            Urls.Add (line);
-                        }
+                        HandleUrl (line);
                     } else if (state == FileState.FOLDER) {
-                        if (line.StartsWith ("to:", StringComparison.OrdinalIgnoreCase)) {
-                            if (line.Length > 3) {
-                                string url = line.Substring (3);
-                                if (IsProperFormatGithubUrl (url)) {
-                                    Logger.WriteLine ("Added new folder with url {0}.", url);
-                                    Folders.Push (new Folder (url));
-                                } else
-                                    Logger.WriteLine ("Invalid Url for FOLDER: {0}", url);
-                            } else
-                                Logger.WriteLine ("Invalid line for FOLDER: {0}", line);
-                        } else {
-                            if (Folders.Count > 0) {
-                                Logger.WriteLine ("Attached {0} to previous url.", line);
-                                Folders.Peek ().Add (line);
-                            } else
-                                Logger.WriteLine ("No target Url for FOLDER found when attempting to add {0}.", line);
-                        }
+                        HandleFolder (line);
                     }
                 }
             }
-            Logger.WriteLine ("Finished reading {0}.", filename);
+            Logger.WriteLine ($"Finished reading {filename}.");
             return this;
+        }
+
+        private void HandleIgnore (string line) {
+            if (!Ignored.Contains (line)) {
+                Logger.WriteLine ($"Added {line} to ignored list.");
+                Ignored.Add (line);
+            }
+        }
+
+        private void HandleUrl (string line) {
+            if (Urls.Contains (line))
+                Logger.WriteLine ($"Duplicate Url found: {line}");
+            else if (!IsProperFormatGithubUrl (line))
+                Logger.WriteLine ($"Invalid Url found: {line}");
+            else {
+                Logger.WriteLine ($"Added {line} to Urls.");
+                Urls.Add (line);
+            }
+        }
+
+        private void HandleFolder (string line) {
+            if (line.StartsWith ("to:", StringComparison.OrdinalIgnoreCase)) {
+                if (line.Length > 3) {
+                    string url = line.Substring (3);
+                    if (IsProperFormatGithubUrl (url)) {
+                        Logger.WriteLine ($"Added new folder with url {url}.");
+                        Folders.Push (new Folder (url));
+                    } else
+                        Logger.WriteLine ($"Invalid Url for FOLDER: {url}");
+                } else
+                    Logger.WriteLine ($"Invalid line for FOLDER: {line}");
+            } else {
+                if (Folders.Count > 0) {
+                    Logger.WriteLine ($"Attached {line} to previous url.");
+                    Folders.Peek ().Add (line);
+                } else
+                    Logger.WriteLine ($"No target Url for FOLDER found when attempting to add {line}.");
+            }
         }
 
         private bool IsProperFormatGithubUrl (string url) {
@@ -89,29 +103,29 @@ namespace KattisTableGenerator {
         }
 
         public override string ToString () {
-            string res = "";
+            int DEFAULT_SIZE = 10000;
+            StringBuilder builder = new StringBuilder (DEFAULT_SIZE);
             if (Ignored.Count > 0) {
-                res += "IGNORE\n";
+                builder.Append ("IGNORE").AppendLine ();
                 foreach (string ignored in Ignored)
-                    res += ignored + '\n';
-                res += '\n';
+                    builder.Append (ignored).AppendLine ();
+                builder.AppendLine ();
             }
             if (Urls.Count > 0) {
-                res += "URL\n";
+                builder.Append ("URL").AppendLine ();
                 foreach (string url in Urls)
-                    res += url + '\n';
-                res += '\n';
+                    builder.Append (url).AppendLine ();
+                builder.AppendLine ();
             }
             if (Folders.Count > 0) {
-                res += "FOLDER\n";
+                builder.Append ("FOLDER").AppendLine ();
                 foreach (Folder folder in Folders) {
-                    res += "TO:" + folder.Url + '\n';
+                    builder.Append ("TO:").Append (folder.Url).AppendLine ();
                     foreach (string paths in folder.Paths)
-                        res += paths + '\n';
+                        builder.Append (paths).AppendLine ();
                 }
             }
-            res = res.Trim ();
-            return res;
+            return builder.ToString ().TrimEnd ();
         }
     }
 }

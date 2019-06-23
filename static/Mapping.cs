@@ -14,17 +14,17 @@ namespace KattisTableGenerator {
         private Mapping () { }
 
         public static bool FileExists () {
-            Logger.WriteLine ("Looking for {0}...", filename);
+            Logger.WriteLine ($"Looking for {filename}...");
             if (File.Exists (filename)) {
                 Logger.WriteLine ("File found!");
                 return true;
             }
-            Logger.WriteLine ("File not found. It is recommended to run `dotnet KattisTableGenerator.dll map` to ensure fast runtimes.");
+            Logger.WriteLine ("File not found. It is recommended to run `dotnet KattisTableGenerator.dll -map` to ensure fast runtimes.");
             return false;
         }
 
         public static void CreateFile () {
-            Logger.WriteLine ("Creating an empty {0}.", filename);
+            Logger.WriteLine ($"Creating an empty {filename}.");
             File.Create (filename).Close ();
         }
 
@@ -32,9 +32,11 @@ namespace KattisTableGenerator {
             Logger.WriteLine ("Assigning Kattis IDs and Names...");
             string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
             // check if odd
+            if (lines.Length == 0)
+                Logger.WriteLine ("It is recommended to run `dotnet KattisTableGenerator.dll -map` to ensure fast runtimes.");
             if ((lines.Length & 1) == 1) {
                 string message = string.Format ("Found an odd amount of lines in {0}, indicating that a problem ID or problem name is missing. " +
-                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll map` or manually edit {0}.", filename);
+                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll -map` or manually edit {0}.", filename);
                 throw new Exception (message);
             }
             for (int i = 0; i < lines.Length; i += 2) {
@@ -63,31 +65,39 @@ namespace KattisTableGenerator {
                 done = true;
                 HtmlDocument doc = web.Load (url);
                 HtmlNodeCollection collection = doc.DocumentNode.SelectNodes ("//*[@class=\"name_column\"]");
-                foreach (HtmlNode node in collection) {
-                    string name = WebUtility.HtmlDecode (node.InnerText.Trim ());
-                    string href = node.FirstChild.GetAttributeValue ("href", string.Empty);
-                    string id = href.Substring (href.LastIndexOf ("/", StringComparison.Ordinal) + 1);
-                    Logger.WriteLine ("Added problem {0} ({1})", id, name);
-                    mappings.Add (id, name);
-                }
-                HtmlNode button = doc.DocumentNode.SelectSingleNode ("//*[@id=\"problem_list_paginate\"]").LastChild;
-                string classValue = button.GetAttributeValue ("class", string.Empty);
-                if (classValue.Equals ("enabled")) {
-                    url = string.Format ("https://open.kattis.com/problems?page={0}&order=name", i++);
-                    done = false;
+                if (collection != null) {
+                    foreach (HtmlNode node in collection) {
+                        string name = WebUtility.HtmlDecode (node.InnerText.Trim ());
+                        string href = node.FirstChild.GetAttributeValue ("href", string.Empty);
+                        string id = href.Substring (href.LastIndexOf ("/", StringComparison.Ordinal) + 1);
+                        Logger.WriteLine ($"Added problem {name} ({id})");
+                        if (!mappings.ContainsKey (id))
+                            mappings.Add (id, name);
+                    }
+                    HtmlNode nextButton = doc.DocumentNode.SelectSingleNode ("//*[@id=\"problem_list_paginate\"]")?.LastChild;
+                    if (nextButton != null) {
+                        string classValue = nextButton.GetAttributeValue ("class", string.Empty);
+                        if (classValue.Equals ("enabled")) {
+                            url = $"https://open.kattis.com/problems?page={i++}&order=name";
+                            done = false;
+                        }
+                    }
+                } else {
+                    Logger.WriteLine ($"Could not find problems: {url}");
                 }
             }
             Logger.WriteLine ("Finished updating map.");
-            Logger.WriteLine ("Map now has {0} problem(s)", mappings.Count);
+            Logger.WriteLine ($"Map now has {mappings.Count} problem(s)");
         }
 
         public static void UpdateFile () {
-            Logger.WriteLine ("Updating {0}.", filename);
-            StringBuilder builder = new StringBuilder ();
+            Logger.WriteLine ($"Updating {filename}.");
+            int STRINGBUILDER_SIZE = 100000;
+            StringBuilder builder = new StringBuilder (STRINGBUILDER_SIZE);
             foreach (var pair in mappings)
                 builder.Append (pair.Key).Append ('\n').Append (pair.Value).Append ('\n');
             File.WriteAllText (filename, builder.ToString ().TrimEnd ());
-            Logger.WriteLine ("Updated {0}.", filename);
+            Logger.WriteLine ($"Updated {filename}.");
         }
     }
 }

@@ -6,7 +6,7 @@ namespace KattisTableGenerator {
     public class Program {
         public static void Main (string[] args) {
             if (args.Length > 0) {
-                if (string.Equals (args[0], "map", StringComparison.OrdinalIgnoreCase)) {
+                if (string.Equals (args[0], "-map", StringComparison.OrdinalIgnoreCase)) {
                     Logger.Start ();
                     Logger.WriteLine ("Starting program...");
                     if (!Mapping.FileExists ())
@@ -14,10 +14,10 @@ namespace KattisTableGenerator {
                     Mapping.AssignMappings ();
                     Mapping.UpdateMap ();
                     Mapping.UpdateFile ();
-                    Logger.Stop ();
                     Logger.WriteLine ("Program finished.");
+                    Logger.Stop ();
                 } else {
-                    Console.WriteLine ("Unknown parameters found \"{0}\". Use no parameters to generate the Kattis table or use \"map\" to update KattisMapping.txt", string.Join (' ', args));
+                    Console.WriteLine ($"Unknown parameters found \"{string.Join (' ', args)}\". Use no parameters to generate the Kattis table or use \"-map\" to update KattisMapping.txt.");
                 }
             } else {
                 Logger.Start ();
@@ -35,8 +35,8 @@ namespace KattisTableGenerator {
                     string table = generator.GetTableString ();
                     file.WriteLine (table);
                 }
-                Logger.Stop ();
                 Logger.WriteLine ("Program finished.");
+                Logger.Stop ();
             }
         }
     }

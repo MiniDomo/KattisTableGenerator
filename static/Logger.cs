@@ -1,32 +1,47 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace KattisTableGenerator {
     public class Logger {
         private static Stopwatch watch = new Stopwatch ();
+        private static StreamWriter stdout = new StreamWriter (Console.OpenStandardOutput (1 << 16), UnicodeEncoding.Default, 1 << 16);
+        private const int DEFAULT_SIZE = 100000;
+        private static StringBuilder builder = new StringBuilder (DEFAULT_SIZE);
 
         private Logger () { }
 
-        public static void WriteLine (object obj) {
-            Console.WriteLine ("{0} {1}", GetTimestamp (), obj);
+        public static void WriteLine (object obj) {            string timestamp = GetTimestamp ();
+            builder.Append (timestamp).Append (' ').Append (obj).AppendLine ();
+            stdout.WriteLine ($"{timestamp} {obj}");
         }
 
         public static void WriteLine (string message) {
-            Console.WriteLine ("{0} {1}", GetTimestamp (), message);
+            string timestamp = GetTimestamp ();
+            builder.Append (timestamp).Append (' ').Append (message).AppendLine ();
+            stdout.WriteLine ($"{timestamp} {message}");
         }
 
         public static void WriteLine (string format, params object[] args) {
-            Console.WriteLine (GetTimestamp () + " " + format, args);
+            string timestamp = GetTimestamp ();
+            builder.Append (timestamp).Append (' ').AppendFormat (format, args).AppendLine ();
+            stdout.WriteLine ($"{timestamp} {format}", args);
         }
 
-        private static string GetTimestamp () => string.Format ("[{0}]", watch.Elapsed);
+        private static string GetTimestamp () => $"[{watch.Elapsed}]";
 
         public static void Start () {
             watch.Start ();
+            stdout.AutoFlush = true;
         }
 
         public static void Stop () {
             watch.Stop ();
+            stdout.Close ();
+            using (StreamWriter file = new StreamWriter ("Log.log", false, UnicodeEncoding.Default, 1 << 16)) {
+                file.Write (builder);
+            }
         }
     }
 }

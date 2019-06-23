@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace KattisTableGenerator {
     public class KattisProblem : IComparable<KattisProblem>, IEquatable<KattisProblem> {
@@ -11,7 +12,7 @@ namespace KattisTableGenerator {
         public KattisProblem (string name, string id) {
             this.name = name;
             this.id = id;
-            url = "https://open.kattis.com/problems/" + id;
+            url = $"https://open.kattis.com/problems/{id}";
             attachments = new SortedSet<HyperLink> ();
         }
 
@@ -59,14 +60,17 @@ namespace KattisTableGenerator {
         }
 
         public override string ToString () {
-            string res = string.Format ("| [{0}]({1}) | ", name, url);
+            int DEFAULT_SIZE = 1000;
+            StringBuilder builder = new StringBuilder (DEFAULT_SIZE).Append ($"| [{name}]({url}) | ");
             bool first = true;
             foreach (HyperLink hyperlink in attachments) {
-                res += (first ? "" : ", ") + hyperlink;
+                if (!first)
+                    builder.Append (", ");
+                builder.Append (hyperlink);
                 first = false;
             }
-            res += " |";
-            return res;
+            builder.Append (" |");
+            return builder.ToString ();
         }
 
         private class HyperLink : IComparable<HyperLink>,
@@ -115,7 +119,7 @@ namespace KattisTableGenerator {
             }
 
             public override string ToString () {
-                return string.Format ("[{0}]({1})", Language, Url);
+                return $"[{Language}]({Url})";
             }
         }
     }
