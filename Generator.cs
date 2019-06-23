@@ -53,7 +53,7 @@ namespace KattisTableGenerator {
                         string href = node.GetAttributeValue ("href", string.Empty);
                         string title = node.GetAttributeValue ("title", string.Empty);
                         if (!string.IsNullOrEmpty (href) && !string.IsNullOrEmpty (title) && !title.Equals ("Go to parent directory")) {
-                            Match match = Regex.Match (href, @"^/[^/]+/[^/]+/(tree|blob)/master/(?:.+/)*(.+)$");
+                            Match match = Regex.Match (href, @"^/[^/]+/[^/]+/(tree|blob)/master/(?:.+/)*([^/]+)/?$");
                             string name = match.Groups[2].ToString ();
                             if (match.Groups[1].ToString ().Equals ("tree"))
                                 directories.Add (name);
@@ -102,7 +102,7 @@ namespace KattisTableGenerator {
                             string href = node.GetAttributeValue ("href", string.Empty);
                             string title = node.GetAttributeValue ("title", string.Empty);
                             if (!string.IsNullOrEmpty (href) && !string.IsNullOrEmpty (title) && !title.Equals ("Go to parent directory")) {
-                                Match match = Regex.Match (href, @"^/[^/]+/[^/]+/blob/master/(?:.+/)*(.+)$");
+                                Match match = Regex.Match (href, @"^/[^/]+/[^/]+/blob/master/(?:.+/)*([^/]+)/?$");
                                 if (match.Success)
                                     files.Add (match.Groups[1].ToString ());
                             }
@@ -192,7 +192,9 @@ namespace KattisTableGenerator {
             } else {
                 Match match = Regex.Match (res, "^https://github.com/[^/]+/[^/]+/tree/");
                 string val = match.Value;
-                res = val.Substring (0, val.Length - 5) + "blob/" + res.Substring (val.Length) + '/';
+                res = val.Substring (0, val.Length - 5) + "blob/" + res.Substring (val.Length);
+                if (!res.EndsWith ('/'))
+                    res += '/';
             }
             return res;
         }
