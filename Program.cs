@@ -1,28 +1,43 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace KattisTableGenerator {
     public class Program {
         public static void Main (string[] args) {
-            if (!Mapping.FileExists ())
-                Mapping.CreateFile ();
-            Mapping.AssignMappings ();
-            Config config = new Config ().Load ();
-            Generator generator = new Generator (config);
-            Console.WriteLine (config + "\n");
-            generator.ProcessConfig ();
-            using (StreamWriter file = new StreamWriter ("README.md")) {
-                file.WriteLine ("# Kattis Solutions");
-                file.WriteLine ("Some solutions may be outdated and could be revised.");
-                string table = generator.GetTableString ();
-                file.WriteLine (table);
+            if (args.Length > 0) {
+                if (string.Equals (args[0], "map", StringComparison.OrdinalIgnoreCase)) {
+                    Logger.Start ();
+                    Logger.WriteLine ("Starting program...");
+                    if (!Mapping.FileExists ())
+                        Mapping.CreateFile ();
+                    Mapping.AssignMappings ();
+                    Mapping.UpdateMap ();
+                    Mapping.UpdateFile ();
+                    Logger.Stop ();
+                    Logger.WriteLine ("Program finished.");
+                } else {
+                    Console.WriteLine ("Unknown parameters found \"{0}\". Use no parameters to generate the Kattis table or use \"map\" to update KattisMapping.txt", string.Join (' ', args));
+                }
+            } else {
+                Logger.Start ();
+                Logger.WriteLine ("Starting program...");
+                if (!Mapping.FileExists ())
+                    Mapping.CreateFile ();
+                Mapping.AssignMappings ();
+                Config config = new Config ().Load ();
+                Generator generator = new Generator (config);
+                generator.ProcessConfig ();
+                using (StreamWriter file = new StreamWriter ("README.md", false, UnicodeEncoding.Default, 1 << 16)) {
+                    Logger.WriteLine ("Writing to README.md");
+                    file.WriteLine ("# Kattis Solutions");
+                    file.WriteLine ("Some solutions may be outdated and could be revised.");
+                    string table = generator.GetTableString ();
+                    file.WriteLine (table);
+                }
+                Logger.Stop ();
+                Logger.WriteLine ("Program finished.");
             }
         }
     }
 }
-/* 
-get id and name mappings
-read config
-check folders
-check urls
- */

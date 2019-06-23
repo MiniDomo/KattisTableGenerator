@@ -13,7 +13,7 @@ namespace KattisTableGenerator {
 
         public Config () {
             if (!File.Exists (filename)) {
-                Console.WriteLine ("{0} not found. Creating {0}.", filename);
+                Logger.WriteLine ("{0} not found. Creating {0}.", filename);
                 File.Create (filename).Close ();
             }
             Urls = new HashSet<string> ();
@@ -22,29 +22,46 @@ namespace KattisTableGenerator {
         }
 
         public Config Load () {
+            Logger.WriteLine ("Reading {0}...", filename);
             string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
             FileState state = FileState.NONE;
             foreach (string original in lines) {
                 string line = original.Trim ();
                 if (line.Length != 0 && !IsFileState (line, ref state)) {
                     if (state == FileState.IGNORE && !Ignored.Contains (line)) {
+                        Logger.WriteLine ("Added {0} to ignored list.", line);
                         Ignored.Add (line);
-                    } else if (state == FileState.URL && !Urls.Contains (line) && IsProperFormatGithubUrl (line)) {
-                        Urls.Add (line);
+                    } else if (state == FileState.URL) {
+                        if (Urls.Contains (line))
+                            Logger.WriteLine ("Duplicate Url found: {0}", line);
+                        else if (!IsProperFormatGithubUrl (line))
+                            Logger.WriteLine ("Invalid Url found: {0}", line);
+                        else {
+                            Logger.WriteLine ("Added {0} to Urls.", line);
+                            Urls.Add (line);
+                        }
                     } else if (state == FileState.FOLDER) {
                         if (line.StartsWith ("to:", StringComparison.OrdinalIgnoreCase)) {
                             if (line.Length > 3) {
                                 string url = line.Substring (3);
-                                if (IsProperFormatGithubUrl (url))
+                                if (IsProperFormatGithubUrl (url)) {
+                                    Logger.WriteLine ("Added new folder with url {0}.", url);
                                     Folders.Push (new Folder (url));
-                            }
+                                } else
+                                    Logger.WriteLine ("Invalid Url for FOLDER: {0}", url);
+                            } else
+                                Logger.WriteLine ("Invalid line for FOLDER: {0}", line);
                         } else {
-                            if (Folders.Count > 0)
+                            if (Folders.Count > 0) {
+                                Logger.WriteLine ("Attached {0} to previous url.", line);
                                 Folders.Peek ().Add (line);
+                            } else
+                                Logger.WriteLine ("No target Url for FOLDER found when attempting to add {0}.", line);
                         }
                     }
                 }
             }
+            Logger.WriteLine ("Finished reading {0}.", filename);
             return this;
         }
 
@@ -65,7 +82,10 @@ namespace KattisTableGenerator {
         }
 
         private enum FileState {
-            IGNORE, URL, FOLDER, NONE
+            IGNORE,
+            URL,
+            FOLDER,
+            NONE
         }
 
         public override string ToString () {
