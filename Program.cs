@@ -17,7 +17,7 @@ namespace KattisTableGenerator {
                     Logger.WriteLine ("Program finished.");
                     Logger.Stop ();
                 } else {
-                    Console.WriteLine ($"Unknown parameters found \"{string.Join (' ', args)}\". Use no parameters to generate the Kattis table or use \"-map\" to update KattisMapping.txt.");
+                    Console.WriteLine ($"Unknown flag(s) found \"{string.Join (' ', args)}\". Use no flags to generate the Kattis table or use \"-map\" to update KattisMapping.txt.");
                 }
             } else {
                 Logger.Start ();

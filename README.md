@@ -1,13 +1,13 @@
 # Kattis Table Generator
 Easily generate a table in markdown showcasing your solutions to problems on [Kattis](https://open.kattis.com/)!  
-[Download](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v2.1.0/KattisTableGenerator.zip)
+[Download](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v2.1.0/KattisTableGenerator-2.1.0.zip)
 
 ## Prerequisites
 - [.NET Core 2.2](https://dotnet.microsoft.com/download) (or compatible) installed
 
 ## Setup
 Before running the program, `Config.txt` must be configured.  
-Blank lines in `Config.txt` are ignored. In addition, there are 3 keywords:  
+Blank or empty lines in `Config.txt` are ignored. In addition, there are 3 keywords:  
 - `IGNORE` - Indicates that the upcoming lines are things to be ignored during the process.
   - Things that can be ignored: names of files, directories, extensions.
   - The program already ignores invalid extensions for Kattis. To see valid extensions, see [ValidExtensions.cs](https://github.com/MiniDomo/KattisTableGenerator/blob/master/static/ValidExtensions.cs).
@@ -53,19 +53,19 @@ https://github.com/MiniDomo/Kattis/tree/master/C%23
 ```
 
 ## Other Information/Limitations
-- The program will check `FOLDER` first then `URL` regardless of position in `Config.txt`  
+- The program will check `FOLDER` first then `URL` regardless of position in `Config.txt`.
 - Files must be named as the Kattis problem ID, such as `hello.java` for [Hello World!](https://open.kattis.com/problems/hello). However, if a sub-directory has the name as the Kattis problem ID, then the main file, the one to be hyperlinked, can be called either the same Kattis problem ID or `main`; otherwise it will not be considered in the table.
 - If the program encounters a problem that has been already solved in the same programming language and was added to the table, it will not re-add or create a duplicate in the table.
 - When checking a directory, the program will also check sub-directories (if not ignored in `Config.txt`) but only of the given directory; it will not check directories within sub-directories. This applies for both uses of `URL` and `FOLDER`.  
 
 ## Running
-To generate the table, type the following in command prompt:
-```shell
-dotnet KattisTableGenerator.dll
-```
-To obtain faster runtimes in generating the table, generate all Kattis problem IDs and Names. To generate the problem IDs and Names in KattisMapping.txt, use the `-map` flag:
+To obtain faster runtimes when generating the table, generate all current Kattis problem IDs and Names. You only need to do this once unless new problems are added to Kattis. To generate the problem IDs and Names in `KattisMapping.txt`, use the `-map` flag:
 ```shell
 dotnet KattisTableGenerator.dll -map
+```
+The table will be generated in a file called `README.md`. To generate the table, type the following in command prompt:
+```shell
+dotnet KattisTableGenerator.dll
 ```
 
 ## Building
