@@ -53,7 +53,8 @@ https://github.com/MiniDomo/Kattis/tree/master/C%23
 ```
 
 ## Other Information/Limitations
-- The program will check `FOLDER` first then `URL` regardless of position in `Config.txt`.
+- The generated table will be in a file called `README.md`.
+- The program will process `FOLDER` first then `URL` regardless of position in `Config.txt`.
 - Files must be named as the Kattis problem ID, such as `hello.java` for [Hello World!](https://open.kattis.com/problems/hello). However, if a sub-directory has the name as the Kattis problem ID, then the main file, the one to be hyperlinked, can be called either the same Kattis problem ID or `main`; otherwise it will not be considered in the table.
 - If the program encounters a problem that has been already solved in the same programming language and was added to the table, it will not re-add or create a duplicate in the table.
 - When checking a directory, the program will also check sub-directories (if not ignored in `Config.txt`) but only of the given directory; it will not check directories within sub-directories. This applies for both uses of `URL` and `FOLDER`.  
@@ -63,7 +64,7 @@ To obtain faster runtimes when generating the table, generate all current Kattis
 ```shell
 dotnet KattisTableGenerator.dll -map
 ```
-The table will be generated in a file called `README.md`. To generate the table, type the following in command prompt:
+To generate the table, type the following in command prompt:
 ```shell
 dotnet KattisTableGenerator.dll
 ```
