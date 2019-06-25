@@ -1,6 +1,6 @@
 # Kattis Table Generator
 Easily generate a table in markdown showcasing your solutions to problems on [Kattis](https://open.kattis.com/)!  
-[Download v3.0.0](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v2.1.0/KattisTableGenerator-3.0.0.zip)  
+[Download v3.0.0](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v3.0.0/KattisTableGenerator-3.0.0.zip)  
 Previous versions below
 - [1.0.0](https://github.com/MiniDomo/Kattis/tree/v1.0.0/KattisTableGenerator)
 - [2.0.0](https://github.com/MiniDomo/Kattis/tree/v2.0.0/KattisTableGenerator)
