@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace KattisTableGenerator {
     public class ValidExtensions {
-        private static Dictionary<string, string> ext = new Dictionary<string, string> { { ".c", "C" },
+        private static Dictionary<string, string> ext = new Dictionary<string, string> { { "c", "C" },
             { "h", "C" },
             { "cs", "C#" },
             { "C", "C++" },
