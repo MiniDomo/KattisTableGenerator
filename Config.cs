@@ -27,7 +27,7 @@ namespace KattisTableGenerator {
             FileState state = FileState.NONE;
             foreach (string original in lines) {
                 string line = original.Trim ();
-                if (!string.IsNullOrEmpty (line) && !IsFileState (line, ref state)) {
+                if (!string.IsNullOrEmpty (line) && !line.StartsWith ("#", StringComparison.OrdinalIgnoreCase) && !IsFileState (line, ref state)) {
                     if (state == FileState.IGNORE) {
                         HandleIgnore (line);
                     } else if (state == FileState.URL) {
