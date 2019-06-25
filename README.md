@@ -1,6 +1,6 @@
 # Kattis Table Generator
 Easily generate a table in markdown showcasing your solutions to problems on [Kattis](https://open.kattis.com/)!  
-[Download](https://github.com/MiniDomo/KattisTableGenerator/releases/download/Kattis-Table-Generator/KattisTableGenerator.zip)
+[Download](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v2.1.0/KattisTableGenerator.zip)
 
 ## Prerequisites
 - [.NET Core 2.2](https://dotnet.microsoft.com/download) (or compatible) installed
