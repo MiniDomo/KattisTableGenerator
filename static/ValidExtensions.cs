@@ -1,61 +1,31 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Json;
 
 namespace KattisTableGenerator {
     public class ValidExtensions {
-        private static Dictionary<string, string> ext = new Dictionary<string, string> { { "c", "C" },
-            { "h", "C" },
-            { "cs", "C#" },
-            { "C", "C++" },
-            { "cc", "C++" },
-            { "cpp", "C++" },
-            { "cxx", "C++" },
-            { "c++", "C++" },
-            { "hh", "C++" },
-            { "hpp", "C++" },
-            { "hxx", "C++" },
-            { "h++", "C++" },
-            { "go", "Go" },
-            { "hs", "Haskell" },
-            { "lhs", "Haskell" },
-            { "java", "Java" },
-            { "js", "JavaScript" },
-            { "kt", "Kotlin" },
-            { "kts", "Kotlin" },
-            { "m", "Objective-C" },
-            { "mm", "Objective-C" },
-            { "M", "Objective-C" },
-            { "pp", "Pascal" },
-            { "pas", "Pascal" },
-            { "inc", "Pascal" },
-            { "php", "PHP" },
-            { "phtml", "PHP" },
-            { "php3", "PHP" },
-            { "php4", "PHP" },
-            { "php5", "PHP" },
-            { "php7", "PHP" },
-            { "phps", "PHP" },
-            { "php-s", "PHP" },
-            { "pl", "Prolog" },
-            { "pro", "Prolog" },
-            { "P", "Prolog" },
-            { "py", "Python" },
-            { "pyc", "Python" },
-            { "pyd", "Python" },
-            { "pyo", "Python" },
-            { "pyw", "Python" },
-            { "pyz", "Python" },
-            { "rb", "Ruby" },
-            { "scala", "Scala" }
-        };
+        private static Dictionary<string, string> extensions = new Dictionary<string, string> ();
 
         private ValidExtensions () { }
+        public static void LoadExtensions () {
+            string jsonString = File.ReadAllText ("extensions.json");
+            JsonObject res = JsonObject.Parse (jsonString) as JsonObject;
+            foreach (var pair in res) {
+                string lang = pair.Key;
+                JsonArray value = pair.Value as JsonArray;
+                foreach (var ext in value) {
+                    string formatted = ext.ToString ();
+                    extensions.Add (formatted.Substring (1, formatted.Length - 2), lang);
+                }
+            }
+        }
 
         public static bool Contains (string extension) {
-            return ext.ContainsKey (extension);
+            return extensions.ContainsKey (extension);
         }
 
         public static string Get (string extension) {
-            return ext[extension];
+            return extensions[extension];
         }
     }
 }

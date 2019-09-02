@@ -19,7 +19,7 @@ namespace KattisTableGenerator {
                 Logger.WriteLine ("File found!");
                 return true;
             }
-            Logger.WriteLine ("File not found. It is recommended to run `dotnet KattisTableGenerator.dll -map` to ensure fast runtimes.");
+            Logger.WriteLine ("File not found. It is recommended to run `dotnet KattisTableGenerator.dll --map` to ensure fast runtimes.");
             return false;
         }
 
@@ -33,10 +33,10 @@ namespace KattisTableGenerator {
             string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
             // check if odd
             if (lines.Length == 0)
-                Logger.WriteLine ("It is recommended to run `dotnet KattisTableGenerator.dll -map` to ensure fast runtimes.");
+                Logger.WriteLine ("It is recommended to run `dotnet KattisTableGenerator.dll --map` to ensure fast runtimes.");
             if ((lines.Length & 1) == 1) {
                 string message = string.Format ("Found an odd amount of lines in {0}, indicating that a problem ID or problem name is missing. " +
-                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll -map` or manually edit {0}.", filename);
+                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll --map` or manually edit {0}.", filename);
                 throw new Exception (message);
             }
             for (int i = 0; i < lines.Length; i += 2) {

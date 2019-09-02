@@ -6,20 +6,20 @@ namespace KattisTableGenerator {
     public class Program {
         public static void Main (string[] args) {
             if (args.Length > 0) {
-                if (string.Equals (args[0], "-map", StringComparison.OrdinalIgnoreCase)) {
+                if (string.Equals (args[0], "--map", StringComparison.OrdinalIgnoreCase)) {
                     Logger.Start ();
                     Logger.WriteLine ("Starting program...");
                     if (!Mapping.FileExists ())
                         Mapping.CreateFile ();
-                    Mapping.AssignMappings ();
                     Mapping.UpdateMap ();
                     Mapping.UpdateFile ();
                     Logger.WriteLine ("Program finished.");
                     Logger.Stop ();
                 } else {
-                    Console.WriteLine ($"Unknown flag(s) found \"{string.Join (' ', args)}\". Use no flags to generate the Kattis table or use \"-map\" to update KattisMapping.txt.");
+                    Console.WriteLine ($"Unknown flag(s) found \"{string.Join (' ', args)}\". Use no flags to generate the Kattis table or use \"--map\" to update KattisMapping.txt.");
                 }
             } else {
+                ValidExtensions.LoadExtensions ();
                 Logger.Start ();
                 Logger.WriteLine ("Starting program...");
                 if (!Mapping.FileExists ())

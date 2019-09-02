@@ -1,0 +1,57 @@
+{
+    "C": [
+        "c"
+    ],
+    "C#": [
+        "cs"
+    ],
+    "C++": [
+        "cpp",
+        "cc"
+    ],
+    "COBOL": [
+        "cob"
+    ],
+    "Go": [
+        "go"
+    ],
+    "Haskell": [
+        "hs"
+    ],
+    "Java": [
+        "java"
+    ],
+    "JavaScript": [
+        "js"
+    ],
+    "Kotlin": [
+        "kt"
+    ],
+    "Common Lisp": [
+        "lisp"
+    ],
+    "Objective-C": [
+        "m"
+    ],
+    "OCaml": [
+        "ml"
+    ],
+    "Pascal": [
+        "pas"
+    ],
+    "PHP": [
+        "php"
+    ],
+    "Prolog": [
+        "pl"
+    ],
+    "Python": [
+        "py"
+    ],
+    "Ruby": [
+        "rb"
+    ],
+    "Rust": [
+        "rs"
+    ]
+}

@@ -1,9 +1,10 @@
 # Kattis Table Generator
 Easily generate a table in markdown showcasing your solutions to problems on [Kattis](https://open.kattis.com/)!  
-[Download v3.0.0](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v3.0.0/KattisTableGenerator-3.0.0.zip)  
+[Download v3.0.1](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v3.0.1/KattisTableGenerator-3.0.1.zip)  
 Previous versions below
 - [1.0.0](https://github.com/MiniDomo/Kattis/tree/v1.0.0/KattisTableGenerator)
 - [2.0.0](https://github.com/MiniDomo/Kattis/tree/v2.0.0/KattisTableGenerator)
+- [3.0.0](https://github.com/MiniDomo/KattisTableGenerator/releases/download/v3.0.0/KattisTableGenerator-3.0.0.zip)
 
 ## Prerequisites
 - [.NET Core 2.2](https://dotnet.microsoft.com/download) (or compatible) installed
@@ -13,7 +14,7 @@ Before running the program, `Config.txt` must be configured.
 Blank or empty lines and lines beginning with `#` in `Config.txt` are ignored. In addition, there are 3 keywords:  
 - `IGNORE` - Indicates that the upcoming lines are things to be ignored during the process.
   - Things that can be ignored: names of files, directories, extensions.
-  - The program already ignores invalid extensions for Kattis. To see valid extensions, see [ValidExtensions.cs](https://github.com/MiniDomo/KattisTableGenerator/blob/master/static/ValidExtensions.cs).
+  - The program ignores extensions not found in `extensions.json` which can be modified.
   - In the example below, things that will be ignored when checking will be files that have the extension `.cs`, any file or directory with the name `hello` so something like `hello.java` or `hello.cpp` will be ignored, and the file `abc.cpp` will be ignored.
     ```
     IGNORE
