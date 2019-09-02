@@ -66,9 +66,9 @@ https://github.com/MiniDomo/Kattis/tree/master/C%23
 - When checking a directory, the program will also check sub-directories (if not ignored in `Config.txt`) but only of the given directory; it will not check directories within sub-directories. This applies for both uses of `URL` and `FOLDER`.  
 
 ## Running
-To obtain faster runtimes when generating the table, generate all current Kattis problem IDs and Names. You only need to do this once unless new problems are added to Kattis. To generate the problem IDs and Names in `KattisMapping.txt`, use the `-map` flag:
+To obtain faster runtimes when generating the table, generate all current Kattis problem IDs and Names. You only need to do this once unless new problems are added to Kattis. To generate the problem IDs and Names in `KattisMapping.txt`, use the `--map` flag:
 ```shell
-dotnet KattisTableGenerator.dll -map
+dotnet KattisTableGenerator.dll --map
 ```
 To generate the table, type the following in command prompt:
 ```shell
