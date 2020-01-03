@@ -2,104 +2,74 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace KattisTableGenerator {
     public class Config {
-        private const string filename = "Config.txt";
+        private const string fileName = "config.json";
+        public Configuration configuration;
         public HashSet<string> Urls { get; }
         public HashSet<string> Ignored { get; }
         public Stack<Folder> Folders { get; }
 
         public Config () {
-            if (!File.Exists (filename)) {
-                Logger.WriteLine ("{0} not found. Creating {0}.", filename);
-                File.Create (filename).Close ();
+            Logger.WriteLine ($"Reading {fileName}...");
+            if (!File.Exists (fileName)) {
+                Logger.WriteLine ("{0} not found. Creating {0}.", fileName);
+                configuration = new Configuration ();
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                string jsonString = JsonSerializer.Serialize (configuration, options);
+                File.WriteAllText (fileName, jsonString);
+            } else {
+                string jsonString = File.ReadAllText (fileName);
+                configuration = JsonSerializer.Deserialize<Configuration> (jsonString);
             }
+            Logger.WriteLine ($"Finished reading {fileName}.");
             Urls = new HashSet<string> ();
             Ignored = new HashSet<string> ();
             Folders = new Stack<Folder> ();
+            AddUrls ();
+            AddIgnored ();
+            AddFolders ();
+
         }
 
-        public Config Load () {
-            Logger.WriteLine ($"Reading {filename}...");
-            string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
-            FileState state = FileState.NONE;
-            foreach (string original in lines) {
-                string line = original.Trim ();
-                if (!string.IsNullOrEmpty (line) && !line.StartsWith ("#", StringComparison.OrdinalIgnoreCase) && !IsFileState (line, ref state)) {
-                    if (state == FileState.IGNORE) {
-                        HandleIgnore (line);
-                    } else if (state == FileState.URL) {
-                        HandleUrl (line);
-                    } else if (state == FileState.FOLDER) {
-                        HandleFolder (line);
-                    }
+        private void AddFolders () {
+            foreach (Folder folder in configuration.Folders) {
+                if (IsProperFormatGithubUrl (folder.BaseUrl)) {
+                    Folders.Push (folder);
+                    Logger.WriteLine ($"Added new folder with url {folder.BaseUrl}.");
+                } else {
+                    Logger.WriteLine ($"Invalid Url for FOLDER: {folder.BaseUrl}");
                 }
             }
-            Logger.WriteLine ($"Finished reading {filename}.");
-            return this;
         }
 
-        private void HandleIgnore (string line) {
-            if (!Ignored.Contains (line)) {
-                Logger.WriteLine ($"Added {line} to ignored list.");
-                Ignored.Add (line);
+        private void AddIgnored () {
+            foreach (string ignore in configuration.Ignore) {
+                if (!Ignored.Contains (ignore)) {
+                    Logger.WriteLine ($"Added {ignore} to ignored list.");
+                    Ignored.Add (ignore);
+                }
             }
         }
 
-        private void HandleUrl (string line) {
-            if (Urls.Contains (line))
-                Logger.WriteLine ($"Duplicate Url found: {line}");
-            else if (!IsProperFormatGithubUrl (line))
-                Logger.WriteLine ($"Invalid Url found: {line}");
-            else {
-                Logger.WriteLine ($"Added {line} to Urls.");
-                Urls.Add (line);
-            }
-        }
-
-        private void HandleFolder (string line) {
-            if (line.StartsWith ("to:", StringComparison.OrdinalIgnoreCase)) {
-                if (line.Length > 3) {
-                    string url = line.Substring (3);
-                    if (IsProperFormatGithubUrl (url)) {
-                        Logger.WriteLine ($"Added new folder with url {url}.");
-                        Folders.Push (new Folder (url));
-                    } else
-                        Logger.WriteLine ($"Invalid Url for FOLDER: {url}");
-                } else
-                    Logger.WriteLine ($"Invalid line for FOLDER: {line}");
-            } else {
-                if (Folders.Count > 0) {
-                    Logger.WriteLine ($"Attached {line} to previous url.");
-                    Folders.Peek ().Add (line);
-                } else
-                    Logger.WriteLine ($"No target Url for FOLDER found when attempting to add {line}.");
+        private void AddUrls () {
+            foreach (string url in configuration.Url) {
+                if (Urls.Contains (url))
+                    Logger.WriteLine ($"Duplicate Url found: {url}");
+                else if (!IsProperFormatGithubUrl (url))
+                    Logger.WriteLine ($"Invalid Url found: {url}");
+                else {
+                    Logger.WriteLine ($"Added {url} to Urls.");
+                    Urls.Add (url);
+                }
             }
         }
 
         private bool IsProperFormatGithubUrl (string url) {
             return Uri.IsWellFormedUriString (url, UriKind.Absolute) && Regex.IsMatch (url, @"^https://github.com/[^/]+/[^/]+(/|/tree/master/([^/]+/?)+)?$");
-        }
-
-        private bool IsFileState (string line, ref FileState state) {
-            if (string.Equals (line, "ignore", StringComparison.OrdinalIgnoreCase))
-                state = FileState.IGNORE;
-            else if (string.Equals (line, "url", StringComparison.OrdinalIgnoreCase))
-                state = FileState.URL;
-            else if (string.Equals (line, "folder", StringComparison.OrdinalIgnoreCase))
-                state = FileState.FOLDER;
-            else
-                return false;
-            return true;
-        }
-
-        private enum FileState {
-            IGNORE,
-            URL,
-            FOLDER,
-            NONE
         }
 
         public override string ToString () {
@@ -120,7 +90,7 @@ namespace KattisTableGenerator {
             if (Folders.Count > 0) {
                 builder.Append ("FOLDER").AppendLine ();
                 foreach (Folder folder in Folders) {
-                    builder.Append ("TO:").Append (folder.Url).AppendLine ();
+                    builder.Append ("TO:").Append (folder.BaseUrl).AppendLine ();
                     foreach (string paths in folder.Paths)
                         builder.Append (paths).AppendLine ();
                 }

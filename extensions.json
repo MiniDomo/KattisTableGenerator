@@ -1,57 +1,123 @@
-{
-    "C": [
-        "c"
-    ],
-    "C#": [
-        "cs"
-    ],
-    "C++": [
-        "cpp",
-        "cc"
-    ],
-    "COBOL": [
-        "cob"
-    ],
-    "Go": [
-        "go"
-    ],
-    "Haskell": [
-        "hs"
-    ],
-    "Java": [
-        "java"
-    ],
-    "JavaScript": [
-        "js"
-    ],
-    "Kotlin": [
-        "kt"
-    ],
-    "Common Lisp": [
-        "lisp"
-    ],
-    "Objective-C": [
-        "m"
-    ],
-    "OCaml": [
-        "ml"
-    ],
-    "Pascal": [
-        "pas"
-    ],
-    "PHP": [
-        "php"
-    ],
-    "Prolog": [
-        "pl"
-    ],
-    "Python": [
-        "py"
-    ],
-    "Ruby": [
-        "rb"
-    ],
-    "Rust": [
-        "rs"
-    ]
-}
+[
+    {
+        "Name": "C",
+        "Extensions": [
+            "c"
+        ]
+    },
+    {
+        "Name": "C#",
+        "Extensions": [
+            "cs"
+        ]
+    },
+    {
+        "Name": "C++",
+        "Extensions": [
+            "cpp",
+            "cc",
+            "c++",
+            "cxx",
+            "h"
+        ]
+    },
+    {
+        "Name": "COBOL",
+        "Extensions": [
+            "cob",
+            "cbl",
+            "cpy"
+        ]
+    },
+    {
+        "Name": "F#",
+        "Extensions": [
+            "fs"
+        ]
+    },
+    {
+        "Name": "Haskell",
+        "Extensions": [
+            "hs"
+        ]
+    },
+    {
+        "Name": "Java",
+        "Extensions": [
+            "java"
+        ]
+    },
+    {
+        "Name": "JavaScript",
+        "Extensions": [
+            "js"
+        ]
+    },
+    {
+        "Name": "Kotlin",
+        "Extensions": [
+            "kt"
+        ]
+    },
+    {
+        "Name": "Common Lisp",
+        "Extensions": [
+            "lisp",
+            "cl"
+        ]
+    },
+    {
+        "Name": "Objective-C",
+        "Extensions": [
+            "m"
+        ]
+    },
+    {
+        "Name": "OCaml",
+        "Extensions": [
+            "ml"
+        ]
+    },
+    {
+        "Name": "Pascal",
+        "Extensions": [
+            "pas"
+        ]
+    },
+    {
+        "Name": "PHP",
+        "Extensions": [
+            "php"
+        ]
+    },
+    {
+        "Name": "Prolog",
+        "Extensions": [
+            "pl"
+        ]
+    },
+    {
+        "Name": "Python",
+        "Extensions": [
+            "py"
+        ]
+    },
+    {
+        "Name": "Ruby",
+        "Extensions": [
+            "rb"
+        ]
+    },
+    {
+        "Name": "Rust",
+        "Extensions": [
+            "rs"
+        ]
+    },
+    {
+        "Name": "Scala",
+        "Extensions": [
+            "scala"
+        ]
+    }
+]

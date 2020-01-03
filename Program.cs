@@ -25,7 +25,7 @@ namespace KattisTableGenerator {
                 if (!Mapping.FileExists ())
                     Mapping.CreateFile ();
                 Mapping.AssignMappings ();
-                Config config = new Config ().Load ();
+                Config config = new Config ();
                 Generator generator = new Generator (config);
                 generator.ProcessConfig ();
                 using (StreamWriter file = new StreamWriter ("README.md", false, UnicodeEncoding.Default, 1 << 16)) {

@@ -14,7 +14,7 @@ namespace KattisTableGenerator {
         private HtmlWeb web;
 
         public Generator (Config config) {
-            folders = config.Folders;
+            folders = new Stack<Folder> (config.Folders);
             ignored = config.Ignored;
             urls = config.Urls;
             table = new SortedList<string, KattisProblem> ();
@@ -118,9 +118,8 @@ namespace KattisTableGenerator {
         private void CheckFolders () {
             while (folders.Count > 0) {
                 Folder folder = folders.Pop ();
-                string url = AdjustUrl (folder.Url);
-                while (folder.Count > 0) {
-                    string path = folder.Next ();
+                string url = AdjustUrl (folder.BaseUrl);
+                foreach (string path in folder.Paths) {
                     DirectoryInfo dir = new DirectoryInfo (path);
                     FolderHandleFiles (dir, url, false);
                     FolderHandleDirectories (dir, url);

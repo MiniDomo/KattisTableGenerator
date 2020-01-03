@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KattisTableGenerator {
     public class ValidExtensions {
@@ -9,13 +10,10 @@ namespace KattisTableGenerator {
         private ValidExtensions () { }
         public static void LoadExtensions () {
             string jsonString = File.ReadAllText ("extensions.json");
-            JsonObject res = JsonObject.Parse (jsonString) as JsonObject;
-            foreach (var pair in res) {
-                string lang = pair.Key;
-                JsonArray value = pair.Value as JsonArray;
-                foreach (var ext in value) {
-                    string formatted = ext.ToString ();
-                    extensions.Add (formatted.Substring (1, formatted.Length - 2), lang);
+            Language[] languages = JsonSerializer.Deserialize<Language[]> (jsonString);
+            foreach (var lang in languages) {
+                foreach (var ext in lang.Extensions) {
+                    extensions.Add (ext, lang.Name);
                 }
             }
         }

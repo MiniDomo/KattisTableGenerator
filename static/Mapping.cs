@@ -8,14 +8,14 @@ using HtmlAgilityPack;
 namespace KattisTableGenerator {
     public class Mapping {
         private const int DEFAULT_SIZE = 2500;
-        private const string filename = "KattisMapping.txt";
+        private const string fileName = "KattisMapping.txt";
         private static SortedList<string, string> mappings = new SortedList<string, string> (DEFAULT_SIZE);
 
         private Mapping () { }
 
         public static bool FileExists () {
-            Logger.WriteLine ($"Looking for {filename}...");
-            if (File.Exists (filename)) {
+            Logger.WriteLine ($"Looking for {fileName}...");
+            if (File.Exists (fileName)) {
                 Logger.WriteLine ("File found!");
                 return true;
             }
@@ -24,19 +24,19 @@ namespace KattisTableGenerator {
         }
 
         public static void CreateFile () {
-            Logger.WriteLine ($"Creating an empty {filename}.");
-            File.Create (filename).Close ();
+            Logger.WriteLine ($"Creating an empty {fileName}.");
+            File.Create (fileName).Close ();
         }
 
         public static void AssignMappings () {
             Logger.WriteLine ("Assigning Kattis IDs and Names...");
-            string[] lines = File.ReadAllLines (filename, UnicodeEncoding.Default);
+            string[] lines = File.ReadAllLines (fileName, UnicodeEncoding.Default);
             // check if odd
             if (lines.Length == 0)
                 Logger.WriteLine ("It is recommended to run `dotnet KattisTableGenerator.dll --map` to ensure fast runtimes.");
             if ((lines.Length & 1) == 1) {
                 string message = string.Format ("Found an odd amount of lines in {0}, indicating that a problem ID or problem name is missing. " +
-                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll --map` or manually edit {0}.", filename);
+                    "To fix this, try deleting {0} and running `dotnet KattisTableGenerator.dll --map` or manually edit {0}.", fileName);
                 throw new Exception (message);
             }
             for (int i = 0; i < lines.Length; i += 2) {
@@ -91,13 +91,13 @@ namespace KattisTableGenerator {
         }
 
         public static void UpdateFile () {
-            Logger.WriteLine ($"Updating {filename}.");
+            Logger.WriteLine ($"Updating {fileName}.");
             int STRINGBUILDER_SIZE = 100000;
             StringBuilder builder = new StringBuilder (STRINGBUILDER_SIZE);
             foreach (var pair in mappings)
                 builder.Append (pair.Key).Append ('\n').Append (pair.Value).Append ('\n');
-            File.WriteAllText (filename, builder.ToString ().TrimEnd ());
-            Logger.WriteLine ($"Updated {filename}.");
+            File.WriteAllText (fileName, builder.ToString ().TrimEnd ());
+            Logger.WriteLine ($"Updated {fileName}.");
         }
     }
 }
