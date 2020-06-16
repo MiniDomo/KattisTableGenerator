@@ -32,12 +32,13 @@ The `Folders` property is an Object array where each object should have the prop
 - When checking a directory, the program will also check sub-directories (if not ignored in `config.json`) but only of the given directory; it will not check directories within sub-directories. This applies for both uses of `Url` and `Folders`.  
 
 ## `config.json` Example
-In the example below, all files and directories that are named `hello` will be ignored. In addition, `abc.java` will be ignored. To view an example of a table generated via this program, [check here](https://github.com/minidomo/Kattis).
+In the example below, all files and directories that are named `hello` will be ignored. In addition, `abc.java` and files ending with `.cs` will be ignored. To view an example of a table generated via this program, [check here](https://github.com/minidomo/Kattis).
 ```json
 {
     "Ignore": [
         "hello",
-        "abc.java"
+        "abc.java",
+        ".cs"
     ],
     "Url": [
         "https://github.com/MiniDomo/Kattis/tree/master/Java"
