@@ -45,7 +45,7 @@ namespace KattisTableGenerator {
         private void CheckUrls () {
             foreach (string url in urls) {
                 HtmlDocument doc = web.Load (url);
-                HtmlNodeCollection collection = doc.DocumentNode.SelectNodes ("//*[@class=\"js-navigation-open\"]");
+                HtmlNodeCollection collection = doc.DocumentNode.SelectNodes ("//*[@class=\"js-navigation-open \"]");
                 if (collection != null) {
                     List<string> files = new List<string> ();
                     List<string> directories = new List<string> ();

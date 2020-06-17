@@ -12,7 +12,8 @@ namespace KattisTableGenerator {
 
         private Logger () { }
 
-        public static void WriteLine (object obj) {            string timestamp = GetTimestamp ();
+        public static void WriteLine (object obj) {
+            string timestamp = GetTimestamp ();
             builder.Append (timestamp).Append (' ').Append (obj).AppendLine ();
             stdout.WriteLine ($"{timestamp} {obj}");
         }
@@ -39,7 +40,9 @@ namespace KattisTableGenerator {
         public static void Stop () {
             watch.Stop ();
             stdout.Close ();
-            using (StreamWriter file = new StreamWriter ($"{DateTime.Now.ToString("d-M-yyyy-hh-mm-ss")}.log", false, UnicodeEncoding.Default, 1 << 16)) {
+            if (!Directory.Exists (@".\logs\"))
+                Directory.CreateDirectory (@".\logs\");
+            using (StreamWriter file = new StreamWriter ($"logs\\{DateTime.Now.ToString("d-M-yyyy-hh-mm-ss")}.log", false, UnicodeEncoding.Default, 1 << 16)) {
                 file.Write (builder);
             }
         }
