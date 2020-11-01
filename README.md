@@ -16,7 +16,7 @@ Initially the `config.json` should look like this:
     "Ignore": [],
     "Url": [],
     "Folders": [],
-    "Base:" []
+    "Base": []
 }
 ```
 The `Ignore` property is a String array that can be filled with the names of files, directories, or extensions that are to be ignored during the process. By default, the program ignores extensions not found in `extensions.json`, which can be modified by the user.
