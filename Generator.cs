@@ -143,6 +143,7 @@ namespace KattisTableGenerator {
         }
 
         private void TryAdd (string url, string id, string ext) {
+            id = id.ToLower();
             if (!ValidExtensions.Contains (ext)) {
                 Logger.WriteLine ($"Unknown extension found: {ext}");
                 return;

@@ -30,8 +30,9 @@ namespace KattisTableGenerator {
                 generator.ProcessConfig ();
                 using (StreamWriter file = new StreamWriter ("README.md", false, UnicodeEncoding.Default, 1 << 16)) {
                     Logger.WriteLine ("Writing to README.md");
-                    file.WriteLine ("# Kattis Solutions");
-                    file.WriteLine ("Some solutions may be outdated and could be revised.\n");
+                    file.WriteLine(config.GetBase());
+                    file.WriteLine("\n");
+                    file.WriteLine("## Kattis Solutions");
                     string table = generator.GetTableString ();
                     file.WriteLine (table);
                 }

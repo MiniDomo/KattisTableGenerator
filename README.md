@@ -15,7 +15,8 @@ Initially the `config.json` should look like this:
 {
     "Ignore": [],
     "Url": [],
-    "Folders": []
+    "Folders": [],
+    "Base:" []
 }
 ```
 The `Ignore` property is a String array that can be filled with the names of files, directories, or extensions that are to be ignored during the process. By default, the program ignores extensions not found in `extensions.json`, which can be modified by the user.
@@ -23,6 +24,8 @@ The `Ignore` property is a String array that can be filled with the names of fil
 The `Url` property is a String array that can be filled with the GitHub urls of where your solutions are located. Urls that are not from github are ignored.  
 
 The `Folders` property is an Object array where each object should have the properties `BaseUrl` (String) and `Paths` (String array). This causes the program to search a given local directory on the user's computer and finds Kattis solutions to hyperlink it to a given GitHub url of where their solutions are uploaded. This gives better performance than the `Url` property as it does not require any online requests. Some important details are that `BaseUrl` must be a GitHub url of where your solutions are located online and `Paths` consists of existing directories on your local computer.
+
+The `Base` property is a String array that should be filled with a path to a markdown file specifying a *header* for the generated `README.md`. This markdown file should contain all information you'd like to display prior to the table appearing on your `README.md`. If this is property is left empty, a default header will be generated.
 
 ## Other Information/Limitations
 - The generated table will be in a file called `README.md`.
@@ -56,7 +59,8 @@ In the example below, all files and directories that are named `hello` will be i
                 "C:\\Kattis\\C#"
             ]
         }
-    ]
+    ],
+    "Base": ["C:\\Kattis\\BASE_README.md"]
 }
 ```
 
