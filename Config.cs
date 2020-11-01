@@ -68,6 +68,14 @@ namespace KattisTableGenerator {
             }
         }
 
+        public string GetBase() {
+            foreach (string baseFile in configuration.Base) {
+                string baseReadMe = File.ReadAllText(baseFile);
+                return baseReadMe;
+            }
+            return File.ReadAllText("DEFAULT.md");
+        }
+
         private bool IsProperFormatGithubUrl (string url) {
             return Uri.IsWellFormedUriString (url, UriKind.Absolute) && Regex.IsMatch (url, @"^https://github.com/[^/]+/[^/]+(/|/tree/master/([^/]+/?)+)?$");
         }
